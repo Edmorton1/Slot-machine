@@ -7,6 +7,12 @@ import grape from "./slots/GRAPE.png"
 import bell from "./slots/BELL.png"
 import cherry from "./slots/CHERRY.png"
 import logo from "./logo.png"
+import spinSound from "./sounds/SPINING.mp3"
+import buttonSound from "./sounds/BUTTON.mp3"
+import winSound from "./sounds/INFO.mp3"
+import bigWinSound from "./sounds/BIG WIN.mp3"
+import JackpotSound from "./sounds/JACKPOT.mp3"
+import Modal from "./modal"
 
 export const App = () => {
     const [spin, setSpin] = useState(false)
@@ -15,6 +21,7 @@ export const App = () => {
     const [betState, setBetState] = useState(true)
     const [combination, setCombination] = useState<string[]>(["", "", ""])
     const [balance, setBalance] = useState(100)
+    const [modalActive, setModalActive] = useState(false)
 
     const slotRefs = [useRef(null), useRef(null), useRef(null)]
 
@@ -22,16 +29,29 @@ export const App = () => {
     const symbols = ["seven", "lemon", "bar", "grape", "bell", "cherry"]
     const winFactor: [string, number][] = [["seven", 259], ["lemon", 5], ["bar", 10], ["bell", 9], ["grape", 7], ["cherry", 3]]
 
+    const playSound = (soundName: string) => {
+        const sound = new Audio(soundName);
+        sound.play()
+    }
+
     function winCounting(bet: string[]): number {
         let total = 0
         winFactor.map(el => {
             const count = bet.filter(value => value == el[0]).length
-            if (count == 3) {
+            if (count == 3 && el[0] == "seven") {
                 total += 3 * el[1]
+                playSound(JackpotSound)
+            } else if (count == 3) {
+                total += 3 * el[1]
+                playSound(bigWinSound)
             } else if (count == 2 && el[0] == "seven") {
-                total += 12
+                total += 15
+                playSound(bigWinSound)
+            } else if (count == 1 && el[0] == "seven") {
+                total += 1
             } else if (count == 2) {
                 total += el[1]
+                playSound(winSound)
             } return 0
         })
         setCombination(["", "", ""])
@@ -77,7 +97,7 @@ export const App = () => {
         setWin(winCounting(combination) * bet)
     }, [spin])
 
-    const handlerBet = (value: number) => () => {
+    const handlerBet = (value: number) => {
            if ((bet + value > balance)) {
             setBet(balance)
            } else if ((bet + value) < 1) {
@@ -94,6 +114,7 @@ export const App = () => {
             <header>
                 <img src={logo} />
             </header>
+            {modalActive ? <Modal active={modalActive} setActive={setModalActive}/> : ''}
             <div id="automat">
                 <div id="slots">
                     {slotRefs.map((ref, index) => (
@@ -103,15 +124,15 @@ export const App = () => {
                 <div id="interface">
                     <div className="info">Win: {win == 0 ? "" : `${win}$`}</div>
                     <div className="info">Balance: {balance}$</div>
-                    <button className="go-button" onClick={() => {balance > 0 && setSpin(true); balance > 0 && setBalance(balance - bet)}} disabled={spin}></button>
+                    <button className="go-button" onClick={() => {balance > 0 && setSpin(true); setBalance(balance - bet); playSound(spinSound); playSound(buttonSound)}} disabled={spin}></button>
                     <div className="bet">
                         <span>Bet: {bet}$
                             <button className="change" onClick={() => setBetState(true)}>+</button>
                             <button className="change" onClick={() => setBetState(false)}>-</button>
                         </span>
-                        {betState ? <button onClick={handlerBet(1)} className="bet-state" disabled={spin}>+1$</button> : <button onClick={handlerBet(-1)} className="bet-state" disabled={spin}>-1$</button>}
-                        {betState ? <button onClick={handlerBet(10)} className="bet-state" disabled={spin}>+10$</button> : <button onClick={handlerBet(-10)} className="bet-state" disabled={spin}>-10$</button>}
-                        {betState ? <button onClick={handlerBet(100)} className="bet-state" disabled={spin}>+100$</button> : <button onClick={handlerBet(-100)} className="bet-state" disabled={spin}>-100$</button>}
+                        <button onClick={() => {playSound(winSound); handlerBet(betState ? 1 : -1)}} className="bet-state" disabled={spin}>{betState ? '+1$' : '-1$'}</button>
+                        <button onClick={() => {playSound(winSound); handlerBet(betState ? 10 : -10)}} className="bet-state" disabled={spin}>{betState ? '+10$' : '-10$'}</button>
+                        <button onClick={() => {playSound(winSound); handlerBet(betState ? 100 : -100)}} className="bet-state" disabled={spin}>{betState ? '+100$' : '-100$'}</button>
                     </div>              
                     <button className="info">History</button>
                 </div>

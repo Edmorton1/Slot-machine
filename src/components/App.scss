@@ -2,14 +2,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
 
 // linear-gradient(45deg, #a8a8a8 25%, #dcdcdc 50%, #a8a8a8 75%);
-$automat-color: black;
+$automat-color: #1f0000;
 $border: 6vh $automat-color solid;
 $border-slot: 3vh $automat-color solid;
 $slots-height: 100%;
 $button-size: 20vw;
 $interface-radius: 50px;
-$font-size-bet: 40px;
-$circle-size-bet: 4.5vh;
+$font-size-bet: 1.7vw;
+$circle-size-bet: 2vw;
+$green-gradient: linear-gradient(0deg, rgba(51,139,0,1) 35%, rgba(64,176,0,1) 50%, rgba(77,210,0,1) 75%);
+$red-gradient: linear-gradient(0deg, rgba(182,0,0,1) 25%, rgba(255,36,36,1) 50%, rgba(207,0,0,1) 75%);
+$yellow-gradient: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,162,0,1) 60%);
+
+img {
+    -webkit-user-drag: none;
+}
 
 * {
     font-size: 2vw;
@@ -23,9 +30,18 @@ $circle-size-bet: 4.5vh;
 }  
 
 body {
+    margin: 0;
+}
+
+#root {
     background-image: url("./gallery5.jpg");
-    margin: 0px;
+    background-position: center;
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: none !important;
+    min-width: 100vw;
+    min-height: 100vh;
     flex-direction: column;
     
     header {
@@ -38,33 +54,31 @@ body {
         }
     }
     #automat {
-        margin-top: 5vh;
         border: $border;
         border-bottom: none;
         border-top-left-radius: 23%;
         border-top-right-radius: 23%;
-        margin-left: 15vw;
-        margin-right: 15vw;
+        margin-left: 10vw;
+        margin-right: 10vw;
         display: flex;
         flex-direction: column;
-        height: 84vh;
+        height: 79vh;
         background: $automat-color;
 
         #interface {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: 1fr 1fr;
+            grid-template-rows: 50% 50%;
             grid-gap: 1vw;
             justify-content: center;
             text-align: center;
-            line-height: calc($button-size / 2);
     
             .go-button {
                 grid-column-start: 2;
                 grid-row-start: 1;
                 grid-row-end: 3;
-                background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,162,0,1) 60%);
-                border: 1.3vw solid gray;
+                background: $yellow-gradient;
+                border: 1vw solid #a1a1a1;
                 border-radius: 50%;
                 width: $button-size;
                 height: $button-size;
@@ -77,15 +91,18 @@ body {
             }
             
             .info {
-                background: linear-gradient(0deg, rgba(51,139,0,1) 35%, rgba(77,210,0,1) 75%);
+                display: flex;
+                background: $green-gradient;
                 border-radius: $interface-radius;
-                border: 10px solid yellow;
+                border: 1.2vw solid yellow;
+                align-items: center;
+                justify-content: center;
             }
 
             .bet {
                 line-height: normal;
                 display: grid;
-                background: linear-gradient(0deg, rgba(0,135,182,1) 25%, rgba(26,170,213,1) 50%, rgba(0,164,207,1) 75%);
+                background: #cf0000;
                 border: 10px solid yellow;
                 border-radius: 50px;
                 overflow: hidden;
@@ -94,7 +111,8 @@ body {
                 grid-template-columns: auto;
 
                 span {
-                    align-self: center;
+                    display: flex;
+                    align-items: center;
                     font-size: $font-size-bet;
                     display: flex;
                     justify-content: space-around;
@@ -107,11 +125,14 @@ body {
                 }
 
                 .bet-state {
-                    background: linear-gradient(0deg, rgba(0,135,182,1) 25%, rgba(26,170,213,1) 50%, rgba(0,164,207,1) 75%);
+                    background: $red-gradient;
                     border-top: 5px yellow solid;
                 }
 
                 .change {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                     text-shadow: none;
                     font-family: Arial, Helvetica, sans-serif;
                     text-align: center;
@@ -135,13 +156,10 @@ body {
                 transform: translateY(0px);
             }
             1% {
-                transform: translateY(-336px);
-            }
-            50% {
-                filter: blur(2px);
+                transform: translateY(-7vw);
             }
             100% {
-                transform: translateY(336px);
+                transform: translateY(7vw);
             } 
         }
         
@@ -152,6 +170,113 @@ body {
             animation-iteration-count: infinite;
             animation-timing-function: linear;
             animation-fill-mode: none;
+        }
+    }
+}
+@media screen and (max-width: 1500px) {
+    * {
+        font-size: 40px;
+    }
+    #root {
+
+        #automat {
+            margin-left: 0;
+            margin-right: 0;
+            height: 50vw;
+        }
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    * {
+        font-size: 40px;
+    }
+    #root {
+        #automat {
+            height: 75vw;
+
+            #interface {
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr 1fr;
+                grid-gap: 1.3vw;
+                justify-content: center;
+                text-align: center;
+
+                .go-button {
+                    $button-small-size: 30vw;
+                    width: $button-small-size;
+                    height: $button-small-size;
+                }
+
+                .bet {
+                $font-size-bet-big: 2.2vw;
+                    span {
+                        font-size: $font-size-bet-big;
+                    };
+
+                    button {
+                        font-size: $font-size-bet-big;
+                    };
+                    .change {
+                        color: black;
+                        border-radius: 0%;
+                        width: 20%;
+                        height: 70%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 750px) {
+    * {
+        font-size: 6vw;
+    };
+    #root {
+        #automat {
+            border: 1vh $automat-color solid;
+            border-bottom: none;
+            border-top-left-radius: 0%;
+            border-top-right-radius: 0%;
+            display: flex;
+            flex-direction: column;
+            height: 79vh;
+            background: $automat-color;
+    
+
+            #interface {
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: 12% 12% 12% 40% 12%;
+                grid-gap: 0.9vw;
+                height: 83%;
+        
+                .go-button {
+                    grid-column-start: 1;
+                    grid-row-start: 2;
+                    grid-row-end: 3;
+                    border-radius: $interface-radius;
+                    width: 100%;
+                    height: 100%;
+                }
+                
+                .bet {
+                    $font-size-bet-small: 7vw;
+
+                    span {
+                        font-size: $font-size-bet-small;
+                    };
+
+                    button {
+                        font-size: $font-size-bet-small;
+                    };
+                }
+            }
+            #slots {
+                border-radius: 3vw;
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ const config = (env: EnvInterface): webpack.Configuration => {
         module: {
             rules: [
                 {
-                    test: /\.(png|jpe?g|gif|jpg)$/i,
+                    test: /\.(png|jpe?g|gif|jpg|mp3)$/i,
                     type: 'asset/resource',
                   },
                 {
