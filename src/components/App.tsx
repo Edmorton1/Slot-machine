@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import "./App.scss"
+import { observer } from "mobx-react-lite"
 import seven from "./slots/SEVEN.png"
 import lemon from "./slots/LEMON.png"
 import bar from "./slots/BAR.png"
@@ -13,14 +14,14 @@ import winSound from "./sounds/INFO.mp3"
 import bigWinSound from "./sounds/BIG WIN.mp3"
 import JackpotSound from "./sounds/JACKPOT.mp3"
 import Modal from "./modal"
+import money from "../store/money"
 
-export const App = () => {
+export const App = observer(() => {
     const [spin, setSpin] = useState(false)
     const [win, setWin] = useState(0)
     const [bet, setBet] = useState(10)
     const [betState, setBetState] = useState(true)
     const [combination, setCombination] = useState<string[]>(["", "", ""])
-    const [balance, setBalance] = useState(100)
     const [modalActive, setModalActive] = useState(false)
 
     const slotRefs = [useRef(null), useRef(null), useRef(null)]
@@ -49,9 +50,6 @@ export const App = () => {
                 playSound(bigWinSound)
             } else if (count == 1 && el[0] == "seven") {
                 total += 1
-            } else if (count == 2) {
-                total += el[1]
-                playSound(winSound)
             } return 0
         })
         setCombination(["", "", ""])
@@ -93,13 +91,16 @@ export const App = () => {
                 setSpin(false)
             }, Math.max(...delays) + 500)
         }
-        setBalance((prev) => prev + winCounting(combination) * bet)
+        money.change(money.balance + winCounting(combination) * bet)
         setWin(winCounting(combination) * bet)
+        {money.balance == 0 && !spin && setModalActive(true)}
     }, [spin])
 
     const handlerBet = (value: number) => {
-           if ((bet + value > balance)) {
-            setBet(balance)
+           if ((bet + value > money.balance)) {
+            setBet(money.balance)
+           } else if (money.balance == 0) {
+            setBet(0)
            } else if ((bet + value) < 1) {
             setBet(1)
            } else if ((bet + value) > 999) {
@@ -123,20 +124,21 @@ export const App = () => {
                 </div>
                 <div id="interface">
                     <div className="info">Win: {win == 0 ? "" : `${win}$`}</div>
-                    <div className="info">Balance: {balance}$</div>
-                    <button className="go-button" onClick={() => {balance > 0 && setSpin(true); setBalance(balance - bet); playSound(spinSound); playSound(buttonSound)}} disabled={spin}></button>
+                    <div className="info">Balance: {money.balance}$</div>
+                    <button className="go-button" onClick={() => {if (money.balance > 0) {setSpin(true); money.change(money.balance - bet); playSound(spinSound); playSound(buttonSound)}
+                                                                  else {setModalActive(true); playSound(buttonSound)}}} disabled={spin}></button>
                     <div className="bet">
                         <span>Bet: {bet}$
                             <button className="change" onClick={() => setBetState(true)}>+</button>
                             <button className="change" onClick={() => setBetState(false)}>-</button>
                         </span>
-                        <button onClick={() => {playSound(winSound); handlerBet(betState ? 1 : -1)}} className="bet-state" disabled={spin}>{betState ? '+1$' : '-1$'}</button>
-                        <button onClick={() => {playSound(winSound); handlerBet(betState ? 10 : -10)}} className="bet-state" disabled={spin}>{betState ? '+10$' : '-10$'}</button>
-                        <button onClick={() => {playSound(winSound); handlerBet(betState ? 100 : -100)}} className="bet-state" disabled={spin}>{betState ? '+100$' : '-100$'}</button>
+                        <button onClick={() => {money.balance != 0 && handlerBet(betState ? 1 : -1); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+1$' : '-1$'}</button>
+                        <button onClick={() => {money.balance != 0 && handlerBet(betState ? 10 : -10); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+10$' : '-10$'}</button>
+                        <button onClick={() => {money.balance != 0 && handlerBet(betState ? 100 : -100); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+100$' : '-100$'}</button>
                     </div>              
                     <button className="info">History</button>
                 </div>
             </div>
         </>
     )
-}
+}) 

@@ -1,5 +1,5 @@
 import {createRoot} from "react-dom/client"
-import Test from "./components/Test"
+import { App } from "./components/App"
 
 const root = document.getElementById("root")
 
@@ -9,4 +9,4 @@ if (!root) {
 
 const container = createRoot(root)
 
-container.render(<Test />)
+container.render(<App />)

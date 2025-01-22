@@ -16,6 +16,9 @@
         text-shadow: none;
         text-align: center;
     }
+    u {
+        cursor: pointer;
+    }
 }
 
 .content {
@@ -24,17 +27,17 @@
     border-radius: 5vw;
     background-color: white;
     width: 50vw;
-    height: 30vw;
+    height: 28vw;
     font-size: $font-modal;
-    a {
+    a, u {
         font-size: $font-modal;
     }
     @media screen and (max-width: 1500px) {
         $font-modal-big: 4.86vw;
         font-size: $font-modal-big;
         width: 60vw;
-        height: 40vw;
-        a {
+        height: 35vw;
+        a, u {
             font-size: $font-modal-big;
         }
     }
@@ -42,8 +45,8 @@
         $font-modal-small: 8vw;
         font-size: $font-modal-small;
         width: 100vw;
-        height: 70vw;
-        a {
+        height: 60vw;
+        a, u {
             font-size: $font-modal-small;
         }
     }
