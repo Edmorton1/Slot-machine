@@ -1,18 +1,14 @@
-import "./modal.scss"
-import money from "../store/money"
+import "./css/modal.scss"
 
 interface ModalInterface {
-    active: boolean,
-    setActive: Function
+    children: any
 }
 
-export default function Modal({setActive}: ModalInterface) {
+export default function Modal({children}: ModalInterface) {
     return (
         <div className="modal">
             <div className="content">
-                Похоже, что у вас закончились деньги, вы можете <u onClick={() => setActive(false)}>
-                    избавиться от лудомании</u> и больше не играть в казино, или 
-                    <a href="https://www.youtube.com/watch?v=3ObzGOsTV1c&ab_channel=Edmorton" target="blank" onClick={() => {money.change(100); setActive(false)}}>открыть видео</a> и получить 100$
+                { children }
             </div>
         </div>
     )

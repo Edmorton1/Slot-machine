@@ -1,20 +1,21 @@
 import { useEffect, useRef, useState } from "react"
-import "./App.scss"
+import "./css/App.scss"
 import { observer } from "mobx-react-lite"
-import seven from "./slots/SEVEN.png"
-import lemon from "./slots/LEMON.png"
-import bar from "./slots/BAR.png"
-import grape from "./slots/GRAPE.png"
-import bell from "./slots/BELL.png"
-import cherry from "./slots/CHERRY.png"
-import logo from "./logo.png"
-import spinSound from "./sounds/SPINING.mp3"
-import buttonSound from "./sounds/BUTTON.mp3"
-import winSound from "./sounds/INFO.mp3"
-import bigWinSound from "./sounds/BIG WIN.mp3"
-import JackpotSound from "./sounds/JACKPOT.mp3"
+import seven from "./assets/slots/SEVEN.png"
+import lemon from "./assets/slots/LEMON.png"
+import bar from "./assets/slots/BAR.png"
+import grape from "./assets/slots/GRAPE.png"
+import bell from "./assets/slots/BELL.png"
+import cherry from "./assets/slots/CHERRY.png"
+import spinSound from "./assets/sounds/SPINING.mp3"
+import buttonSound from "./assets/sounds/BUTTON.mp3"
+import winSound from "./assets/sounds/INFO.mp3"
+import bigWinSound from "./assets/sounds/BIG WIN.mp3"
+import JackpotSound from "./assets/sounds/JACKPOT.mp3"
 import Modal from "./modal"
-import money from "../store/money"
+import money from "./store/money"
+import Header from "./Header"
+import history from "./store/history"
 
 export const App = observer(() => {
     const [spin, setSpin] = useState(false)
@@ -22,7 +23,7 @@ export const App = observer(() => {
     const [bet, setBet] = useState(10)
     const [betState, setBetState] = useState(true)
     const [combination, setCombination] = useState<string[]>(["", "", ""])
-    const [modalActive, setModalActive] = useState(false)
+    const [modalBalance, setModalBalance] = useState(false)
 
     const slotRefs = [useRef(null), useRef(null), useRef(null)]
 
@@ -93,7 +94,10 @@ export const App = observer(() => {
         }
         money.change(money.balance + winCounting(combination) * bet)
         setWin(winCounting(combination) * bet)
-        {money.balance == 0 && !spin && setModalActive(true)}
+        {money.balance == 0 && !spin && setModalBalance(true)}
+        if (!combination.includes('')) {
+            history.postHistory(bet, win, 3)
+        }
     }, [spin])
 
     const handlerBet = (value: number) => {
@@ -112,10 +116,13 @@ export const App = observer(() => {
 
     return (
         <>
-            <header>
-                <img src={logo} />
-            </header>
-            {modalActive ? <Modal active={modalActive} setActive={setModalActive}/> : ''}
+            <Header />
+            {modalBalance ?
+            <Modal>
+            Похоже, что у вас закончились деньги, вы можете <u onClick={() => setModalBalance(false)}>
+                    избавиться от лудомании</u> и больше не играть в казино, или 
+                    <a href="https://www.youtube.com/watch?v=3ObzGOsTV1c&ab_channel=Edmorton" target="blank" onClick={() => {money.change(100); setModalBalance(false)}}>открыть видео</a> и получить 100$
+            </Modal> : ''}
             <div id="automat">
                 <div id="slots">
                     {slotRefs.map((ref, index) => (
@@ -126,7 +133,7 @@ export const App = observer(() => {
                     <div className="info">Win: {win == 0 ? "" : `${win}$`}</div>
                     <div className="info">Balance: {money.balance}$</div>
                     <button className="go-button" onClick={() => {if (money.balance > 0) {setSpin(true); money.change(money.balance - bet); playSound(spinSound); playSound(buttonSound)}
-                                                                  else {setModalActive(true); playSound(buttonSound)}}} disabled={spin}></button>
+                                                                  else {setModalBalance(true); playSound(buttonSound)}}} disabled={spin}></button>
                     <div className="bet">
                         <span>Bet: {bet}$
                             <button className="change" onClick={() => setBetState(true)}>+</button>
@@ -136,7 +143,7 @@ export const App = observer(() => {
                         <button onClick={() => {money.balance != 0 && handlerBet(betState ? 10 : -10); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+10$' : '-10$'}</button>
                         <button onClick={() => {money.balance != 0 && handlerBet(betState ? 100 : -100); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+100$' : '-100$'}</button>
                     </div>              
-                    <button className="info">History</button>
+                    <button className="info" onClick={() => history.postHistory(bet, win, 3)}>History</button>
                 </div>
             </div>
         </>
