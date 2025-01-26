@@ -1,4 +1,4 @@
-import { App } from "./App"
+import { App } from "./pages/main/App"
 import { BrowserRouter, Routes, Route } from "react-router"
 
 export default function Main() {
