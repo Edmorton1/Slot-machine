@@ -51,6 +51,8 @@ const config = (env: EnvInterface): webpack.Configuration => {
             extensions: ['.tsx', '.ts', '.js'],
         },
         devServer: {
+            historyApiFallback: true,
+            hot: true,
             port: env.port,
             open: true,
         },

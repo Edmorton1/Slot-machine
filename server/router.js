@@ -1,5 +1,5 @@
-const express = require('express').Router
-const router = new express
+const Router = require('express').Router
+const router = new Router
 const UserController = require('./controllers/Users/UserController.js')
 const HistoryController = require('./controllers/History/HistoryController.js')
 const {body} = require('express-validator')
@@ -16,5 +16,6 @@ router.post('/registration',
 router.post('/login', UserController.login)
 router.post('/logout', UserController.logout)
 router.get('/refresh', UserController.refresh)
+router.put('/changeBalance', UserController.changeBalance)
 
 module.exports = router

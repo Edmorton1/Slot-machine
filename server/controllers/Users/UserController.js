@@ -29,7 +29,7 @@ class UserController {
             console.log(e)
         }
     }
-    async logout(req, res, next) {
+    async logout(req, res) {
         try {
             const {refreshToken} = req.cookies;
             const token = await UserService.logout(refreshToken)
@@ -39,7 +39,7 @@ class UserController {
             console.log(e)
         }
     }
-    async refresh(req, res, next) {
+    async refresh(req, res) {
         try {
             const {refreshToken} = req.cookies
             const userData = await UserService.refresh(refreshToken)
@@ -55,6 +55,15 @@ class UserController {
         try {
             const allRows = await UserService.get()
             return res.send(allRows)
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    async changeBalance(req, res) {
+        try {
+            console.log('БАЛАНС ИЗМЕНЁН')
+            const zapros = await UserService.changeBalance(req.body)
+            return res.json(zapros.rows)
         } catch(e) {
             console.log(e)
         }

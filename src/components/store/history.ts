@@ -14,7 +14,6 @@ class history {
     async postHistory(bet: number, win: number, user_id: number) {
         await this.fetchHistory()
         const data = {
-            "id": toJS(this.history.at(-1).id) + 1,
             "bet": bet,
             "win": win,
             "user_id": user_id

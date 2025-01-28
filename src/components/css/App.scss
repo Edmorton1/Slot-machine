@@ -29,26 +29,15 @@ body {
 #root {
     background-image: url("../assets/background.jpg");
     background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     margin: none !important;
     min-width: 100vw;
     min-height: 100vh;
-    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
-    header {
-        display: flex;
-        justify-content: center;
-        height: 8vh;
-        text-align: center;
-        background-color: #1c2028;
-
-        img {
-            height: 100%;
-        }
-    }
     #automat {
+        margin-top: auto;
         border: $border;
         border-bottom: none;
         border-top-left-radius: 23%;
@@ -248,7 +237,6 @@ body {
             flex-direction: column;
             height: 79vh;
             background: $automat-color;
-    
 
             #interface {
                 display: grid;
@@ -267,7 +255,7 @@ body {
                 }
                 
                 .bet {
-                    $font-size-bet-small: 7vw;
+                    $font-size-bet-small: 5vw;
 
                     span {
                         font-size: $font-size-bet-small;

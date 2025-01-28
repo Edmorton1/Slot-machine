@@ -63,6 +63,11 @@ class UserService {
         const posts = await db.query('SELECT users.id, users.login, users.balance, tokens.token FROM users FULL OUTER JOIN tokens ON users.id = tokens.user_id')
         return posts.rows
     }
+    async changeBalance(data) {
+        const {id, balance} = data
+        const zapros = await db.query(`UPDATE users SET balance = ${balance} WHERE id = ${id}`)
+        return zapros
+    }
 }
 
 module.exports = new UserService()
