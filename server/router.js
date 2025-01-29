@@ -6,8 +6,10 @@ const {body} = require('express-validator')
 const authMiddleware = require('./controllers/Users/auth-middleware.js')
 
 router.get('/users', authMiddleware, UserController.get)
+
 router.post('/history', HistoryController.create)
 router.get('/history', HistoryController.get)
+router.get('/historyGames/:id', HistoryController.historyGames)
 
 router.post('/registration', 
     body('password').isLength({min: 3, max: 32}),

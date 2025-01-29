@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const db = require('../../db.js')
 class TokenService {
     async generateTokens(payLoad) {
-        const accessToken = jwt.sign(payLoad, process.env.JWT_ACCESS_SECRET, {expiresIn: '10d'})
-        const refreshToken = jwt.sign(payLoad, process.env.JWT_REFRESH_SECRET, {expiresIn: '10d'})
+        const accessToken = jwt.sign(payLoad, process.env.JWT_ACCESS_SECRET, {expiresIn: '10s'})
+        const refreshToken = jwt.sign(payLoad, process.env.JWT_REFRESH_SECRET, {expiresIn: '15s'})
         return {
             accessToken,
             refreshToken

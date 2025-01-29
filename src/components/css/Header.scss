@@ -32,12 +32,38 @@ header {
     }
 }
 @media screen and (min-width: 1501px) {
-    div, button {
-        font-size: 2.5vw;
+    header {
+        div, button {
+            font-size: 1.9vw;
+        }
+        img {
+            height: 3.5vw;
+        }
     }
 }
 @media screen and (max-width: 1127px) {
-    div, button {
-        font-size: 3vw;
+    header {
+        div, button {
+            font-size: 2vw;
+        }
+        button {
+            height: 6vw;
+        }
+
+        img {
+            height: 7vw;
+        }
+    }
+}
+@media screen and (max-width: 1000px) {
+    header {
+        div, button {
+            font-size: 2.8vw;
+            width: 30vw;
+            height: 7vw;
+        }
+        img {
+            height: 7vw;
+        }
     }
 }

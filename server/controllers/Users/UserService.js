@@ -45,14 +45,15 @@ class UserService {
         if (!refreshToken) {
             throw new Error('Пользователь не авторизован')
         }
-        const userData = await TokenService.validateRefreshToken(refreshToken)
+        const userId = await TokenService.validateRefreshToken(refreshToken)
         const tokenFromDataBase = (await TokenService.findToken(refreshToken)).rows[0]
-        if (!userData || !tokenFromDataBase) {
+        if (!userId || !tokenFromDataBase) {
             throw new Error('Пользователь не авторизован')
         }
-        const candidat = await db.query(`SELECT * FROM users WHERE login = '${userData.login}'`)
+        console.log(tokenFromDataBase)
+        const candidat = await db.query(`SELECT * FROM users WHERE id = '${tokenFromDataBase.user_id}'`)
         const userModel = candidat.rows[0]
-        const tokens = await TokenService.generateTokens({"id": userModel, "login": userData.login})
+        const tokens = await TokenService.generateTokens({"id": userModel.id, "login": userId.login})
         await TokenService.saveToken(userModel.id, tokens.refreshToken)
         return {
             ...tokens,

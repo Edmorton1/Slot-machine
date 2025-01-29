@@ -1,13 +1,14 @@
 import "../css/modal.scss"
 
 interface ModalInterface {
-    children: any
+    children: any,
+    type?: string
 }
 
-export default function Modal({children}: ModalInterface) {
+export default function Modal({children, type}: ModalInterface) {
     return (
         <div className="modal">
-            <div className="content">
+            <div className="content" id={type}>
                 { children }
             </div>
         </div>

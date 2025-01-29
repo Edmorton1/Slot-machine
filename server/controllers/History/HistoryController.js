@@ -18,6 +18,15 @@ class HistoryController {
             console.log(e)
         }
     }
+    async historyGames(req, res) {
+        try {
+            const {id} = req.params
+            const rows = await HistoryService.historyGames(id)
+            return res.send(rows)
+        } catch(e) {
+            console.log(e)
+        }
+    }
 }
 
 module.exports = new HistoryController()

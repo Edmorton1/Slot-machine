@@ -22,6 +22,20 @@ class HistoryService {
         console.log(err)
         }
     }
+    async historyGames(id) {
+        const rows = await db.query(
+            `SELECT
+                COUNT(CASE WHEN (win - bet) > 0 THEN 1 ELSE NULL END) as win,
+                COUNT(CASE WHEN (win - bet) < 0 THEN 1 ELSE NULL END) as lose,
+                SUM(win) - SUM(bet) as money,
+                MAX(win - bet),
+                MIN(win - bet)
+            FROM history
+
+            WHERE user_id = ${id}`
+        )
+        return rows.rows
+    }
 }
 
 module.exports = new HistoryService()

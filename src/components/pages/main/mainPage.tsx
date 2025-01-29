@@ -16,6 +16,8 @@ import Modal from "../modal"
 import money from "../../store/money"
 import history from "../../store/history"
 import { Context } from "../../.."
+import axios from "axios"
+import "../../css/AppMedia.scss"
 
 export const MainPage = observer(() => {
     const {store} = useContext(Context)
@@ -27,6 +29,8 @@ export const MainPage = observer(() => {
     const [combination, setCombination] = useState<string[]>(["", "", ""])
     const [modalBalance, setModalBalance] = useState(false)
     const [balanceLoad, setBalanceLoad] = useState(true)
+    const [historyModalState, sethistoryModalState] = useState(false)
+    const [historyStat, setHistoryStat] = useState<{ win: string; lose: string; money: string; max: number; min: number } | null>(null)
 
     const slotRefs = [useRef(null), useRef(null), useRef(null)]
 
@@ -82,8 +86,10 @@ export const MainPage = observer(() => {
     }
 
     useEffect(() => {
+        if (store.user.login) {
+            getHistory()
+        }
         if (balanceLoad) {
-            console.log(userData.balance)
             {userData.balance ? money.balance = userData.balance : money.balance = 100}
             setBalanceLoad(false)
         }
@@ -103,8 +109,8 @@ export const MainPage = observer(() => {
         money.change(money.balance + winCounting(combination) * bet, userData.id)
         setWin(winCounting(combination) * bet)
         {money.balance == 0 && !spin && setModalBalance(true)}
-        if (!combination.includes('')) {
-            history.postHistory(bet, win, 3)
+        if (!combination.includes('') && store.user.login) {
+            history.postHistory(bet, winCounting(combination) * bet, userData.id)
         }
     }, [spin])
 
@@ -115,12 +121,15 @@ export const MainPage = observer(() => {
             setBet(0)
            } else if ((bet + value) < 1) {
             setBet(1)
-           } else if ((bet + value) > 999) {
-            setBet(999)
            } else {
             setBet(bet + value)
            }
         }
+    async function getHistory() {
+        await axios.get(`http://localhost:5001/api/historyGames/${userData.id}`)
+            .then(response => (response.data))
+            .then((data: any) => setHistoryStat(data[0]));
+    }
 
     return (
         <>
@@ -130,6 +139,15 @@ export const MainPage = observer(() => {
                     избавиться от лудомании</u> и больше не играть в казино, или 
                     <a href="https://www.youtube.com/watch?v=3ObzGOsTV1c&ab_channel=Edmorton" target="blank" onClick={() => {money.change(100, userData.id); setModalBalance(false)}}>открыть видео</a> и получить 100$
             </Modal> : ''}
+            {historyModalState ? 
+                    <Modal type="history">
+                        <span className="title"><p>История игр</p> <span onClick={() => sethistoryModalState(false)}>X</span></span>
+                        <p>Выйгрышей: {historyStat.win} Проигрышей: {historyStat.lose}</p>
+                        <p>Денег заработано: {historyStat.money}</p>
+                        <p>Самый большой выйгрыш: {historyStat.max}</p>
+                        <p>Самый крупный проигрыш: {historyStat.min}</p>
+                    </Modal>
+                    : ''}
             <div id="automat">
                 <div id="slots">
                     {slotRefs.map((ref, index) => (
@@ -137,10 +155,10 @@ export const MainPage = observer(() => {
                     ))}
                 </div>
                 <div id="interface">
-                    <div className="info">Win: {win == 0 ? "" : `${win}$`}</div>
+                    <div className="info">Win: {win == 0 ? "" : `${win - bet}$`}</div>
                     <div className="info">Balance: {money.balance}$</div>
-                    <button className="go-button" onClick={() => {if (money.balance > 0) {setSpin(true); money.change(money.balance - bet, userData.id); playSound(spinSound); playSound(buttonSound)}
-                                                                  else {setModalBalance(true); playSound(buttonSound)}}} disabled={spin}></button>
+                    <button className="go-button" onClick={() => {if (money.balance > 0 && bet <= money.balance) {setSpin(true); money.change(money.balance - bet, userData.id); playSound(spinSound)}
+                                                                  else if (bet <= money.balance) {setModalBalance(true)}; playSound(buttonSound)}} disabled={spin}></button>
                     <div className="bet">
                         <span>Bet: {bet}$
                             <button className="change" onClick={() => setBetState(true)}>+</button>
@@ -150,7 +168,7 @@ export const MainPage = observer(() => {
                         <button onClick={() => {money.balance != 0 && handlerBet(betState ? 10 : -10); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+10$' : '-10$'}</button>
                         <button onClick={() => {money.balance != 0 && handlerBet(betState ? 100 : -100); playSound(winSound)}} className="bet-state" disabled={spin}>{betState ? '+100$' : '-100$'}</button>
                     </div>              
-                    <button className="info" onClick={() => history.postHistory(bet, win, 1)}>History</button>
+                    <button className="info" onClick={() => sethistoryModalState(true)} disabled={spin}>History</button>
                 </div>
             </div>
         </>

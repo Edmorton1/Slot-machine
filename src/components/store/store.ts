@@ -53,12 +53,15 @@ export default class Store {
     }
     async checkAuth() {
         try {
-            const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {withCredentials: true})
+            const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {withCredentials: true, timeout: 1000})
+            console.log(response)
             localStorage.setItem('token', response.data.accessToken)
             this.setUser(response.data.user)
             this.isAuth = true
+            console.log('CHECK AUTH')
         } catch(e) {
             console.log(e)
+            await localStorage.removeItem('token')
         } finally {
             this.isLoading = true
         }

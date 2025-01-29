@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
 
+$font-modal: 3.95vw;
+$font-modal-big: 4.86vw;
+$font-modal-small: 8vw;
+
 .modal {
     height: 100vh;
     width: 100vw;
@@ -31,10 +35,20 @@
         height: 5vh;
         width: 10vw;
     }
+    .title {
+        display: flex;
+        justify-content: space-between;
+        p {
+            margin: 0 auto;
+        }
+        span {
+            cursor: pointer;
+            color: red;
+        }
+    }
 }
 
 .content {
-    $font-modal: 3.95vw;
     padding: 2vw;
     border-radius: 5vw;
     background-color: white;
@@ -45,7 +59,6 @@
         font-size: $font-modal;
     }
     @media screen and (max-width: 1500px) {
-        $font-modal-big: 4.86vw;
         font-size: $font-modal-big;
         width: 60vw;
         height: 35vw;
@@ -54,12 +67,28 @@
         }
     }
     @media screen and (max-width: 800px) {
-        $font-modal-small: 8vw;
         font-size: $font-modal-small;
         width: 100vw;
         height: 60vw;
         a, u {
             font-size: $font-modal-small;
+        }
+    }
+}
+
+#history {
+    @media screen and (max-width: 1500px) {
+        width: 60vw;
+        height: 35vw;
+        * {
+            font-size: 4.7vw;
+        }
+    }
+    @media screen and (max-width: 800px) {
+        width: 100vw;
+        height: 60vw;
+        * {
+            font-size: 7.6vw;
         }
     }
 }

@@ -1,6 +1,4 @@
 import {makeAutoObservable} from "mobx"
-import { useContext } from "react"
-import { Context } from "../.."
 import axios from "axios"
 import { API_URL } from "../response/http"
 
@@ -10,7 +8,6 @@ class Counter {
     };
 
     async change(value, userID) {
-        console.log(this.balance)
         this.balance = value
         if (userID) {
             const data = {
