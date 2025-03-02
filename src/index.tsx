@@ -1,28 +1,12 @@
-import { createRoot } from "react-dom/client";
-import Main from "./components/pages/Main";
-import Store from "./components/store/store";
-import { createContext } from "react";
+import {createRoot} from "react-dom/client"
+import { App } from "./components/App"
 
-const root = document.getElementById("root");
-
-const store = new Store()
-
-interface State {
-    store: Store
-}
-
-export const Context = createContext({
-    store,
-})
+const root = document.getElementById("root")
 
 if (!root) {
-    throw new Error('root not found');
+    throw new Error('root not found')
 }
 
-const container = createRoot(root);
+const container = createRoot(root)
 
-container.render(
-    <Context.Provider value={{store}}>
-        <Main />
-    </Context.Provider>
-);
+container.render(<App />)
